@@ -12,7 +12,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "ms",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -94,5 +94,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "8f033993-612b-40b9-add9-166047403c8e"
   }
 }
