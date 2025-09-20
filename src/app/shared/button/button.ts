@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'button[msButton]',
@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './button.scss'
 })
 export class Button {
-  @Input({ required: true }) label!: string;
+  
 }
