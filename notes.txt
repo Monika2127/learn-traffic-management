@@ -1,0 +1,58 @@
+ViewEncapsulation
+    1. Shadow Dom ->
+        - Browser feature to attach the hidden DOm structure to DOM elements
+        - For CSS, it used to scope CSS styles to that hidden tree, instead of applying styles globally to entire page
+    2. Emulated -> 
+        - Scoped to its own component
+        - default
+    3. None ->
+        - applied globally
+
+ng-content(Content projection)
+    - non-standard HTML element to tell Angular that it should render any wrapped content in that place
+
+host in CSS
+    - If I write :host { ... } it will directly apply the styles to the component's host element, which in case of a button component is the <button> element itself.
+    - So, instead of button element, we can use :host 
+    - host component is the selector from where it's calling, in other words, parent component(can't say for sure)
+    - eg, button.scss
+
+host in Component selector
+    - wherever there is ms-control, it will add the class='control' to that element(host/calling component)
+    - eg, control.ts
+    - if the Emulated is there and add the host selector, then it will break, either you need to specify that ecaps is None or
+        make the class/id name in CSS as :host
+        eg, dashboard-item or server-status
+
+@HostBinding()
+    - Add the property to the host element and set the value for that property
+    - in (), we can define the actual property as an optional input
+    - for eg, control.ts
+
+@HostListener()
+    - allows to bind a method to an event which want to listen in hosted component
+    - it's for method
+    - for eg, control.ts
+
+ElementRef 
+    - injecting ElementRef in a component means it is a wrapper around a native DOM element, means you can modify the DOM 
+        element through nativeElement in HOST element
+    - for eg, control.ts
+
+[class] and [style]
+    - add the class and style condition wise, dynamically.
+
+Literal Types
+    - allow specific string values instead of string type(taking string as an example)
+    - for eg, server-status.ts
+
+Constructor
+    - calls when Angular instantiate the component
+    - can do basic class initialization like class property values or something
+
+ngOnInit
+    - runs once Angular has initialized all component inputs
+
+Why adding of {{implement <lifecycle hooks>}} in class??
+    - coz if we define the hook method, then it should not have a typo mistake
+

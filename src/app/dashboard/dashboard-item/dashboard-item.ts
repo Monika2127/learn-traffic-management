@@ -5,7 +5,10 @@ import { Image } from '../../types/image.interface';
   selector: 'ms-dashboard-item',
   imports: [],
   templateUrl: './dashboard-item.html',
-  styleUrl: './dashboard-item.scss'
+  styleUrl: './dashboard-item.scss',
+  host: {
+    class: 'dashboard-item'
+  }
 })
 export class DashboardItem {
 
