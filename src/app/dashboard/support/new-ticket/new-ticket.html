@@ -1,10 +1,14 @@
-<form action="">
+<form (ngSubmit)="onSubmit(titleElement.value, requestElement.value)" #form>
   <ms-control label="Title">
-    <input name="title" id="title" type="text" />
+    <input name="title" id="title" type="text" #titleElement #inputMS />
   </ms-control>
 
+  <!-- <ms-control label="Name">
+    <input name="name" id="name" type="text" #nameElement #inputMS />
+  </ms-control> -->
+
   <ms-control label="Request">
-    <textarea name="request" id="request" rows="3"></textarea>
+    <textarea name="request" id="request" rows="3" #requestElement #inputMS></textarea>
   </ms-control>
 
   <p>

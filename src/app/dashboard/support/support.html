@@ -1,1 +1,13 @@
-<ms-new-ticket />
+<div>
+    <ul>
+        @for (ticket of tickets; track ticket.id) {
+            <li>
+                <ms-ticket [ticketData]="ticket" (closeTicket)="onCloseTicket($event)" />
+            </li>
+        } @empty {
+            <p>No tickets available.</p>
+        }
+    </ul>
+</div>
+
+<ms-new-ticket (add)="onAdd($event)" />

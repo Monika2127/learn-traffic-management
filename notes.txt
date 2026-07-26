@@ -49,6 +49,7 @@ Literal Types
 Constructor
     - calls when Angular instantiate the component
     - can do basic class initialization like class property values or something
+    - bad to do the component initialization.
 
 ngOnInit
     - runs once Angular has initialized all component inputs
@@ -56,3 +57,111 @@ ngOnInit
 Why adding of {{implement <lifecycle hooks>}} in class??
     - coz if we define the hook method, then it should not have a typo mistake
 
+
+Lifecycle hooks::: 
+
+1. constructor - calls when Angular instantiate the component
+2. ngOnChanges - whenever the component's input data changes
+3. ngOnInit - runs once Angular has initialized all component inputs, can do main component initialization work
+4. ngDoCheck - invoked by Angular whenever it thinks that a UI update might need be updated, it's not related to just component
+        If anything happen in anywhere inside the application that could lead to data changes, very rare use
+5. ngAfterContentInit - invokes when there is ng-content in template and that is initialized, means the projected component
+        runs once after all the children nested inside the component (its content) have been initialized.
+6. ngAfterContentChecked - invokes when the projected component's content is checked for changes
+        runs every time the children nested inside the component (its content) have been checked for changes.
+7. ngAfterViewInit - invokes when component's template/view is initialized
+        runs once after all the children in the component's template (its view) have been initialized.
+8. ngAfterViewChecked - invokes when component's view is checked for changes.
+        runs every time the children in the component's template (its view) have been checked for changes.
+9. ngOnDestroy - calls when doing some cleanup work, calls right before the component instance is about to be destroyed
+
+When there is parent-child relationship then the sequence generally is
+
+constructor -> constructor in child -> ngOnChanges -> ngOnInit -> ngDoCheck -> ngAfterContentInit -> ngAfterContentChecked ->
+ngOnChanges in child -> ngOnInit in child -> ngDoCheck in child -> ngAfterContentInit in child -> ngAfterContentChecked in child ->
+ngAfterViewInit in child -> ngAfterViewChecked in child -> ngAfterViewInit -> ngAfterViewChecked
+
+ngOnDestroy in child -> ngOnDestroy
+
+ALTERNATIVE of ngOnDestroy -> inject DestroyRef
+    - a destroy reference, it will setup a listener with the help of that property and the injected value that will trigger
+        a function whenever the component which injected this ref is about to be destroyed
+    - for eg, server.ts
+
+@ViewChild()
+    - decorator used to select elements from the template of the component and make it available in ts file.
+    - helps to find child element in component view
+    - if we pass the selector or argument say, ButtonComponent, then it will look the instance of button component and if 
+        find then store the value in the property defined there. By this, we can interact with ButtonComponent instance
+        via that property in this component class
+    - another eg, by using string of template variable, new-ticket.ts
+    - it will have the value when Angular initialized the component
+    - in signal, we use as function, new-ticket.ts
+    - if you work with decorator and want to console oninit and afterviewinit then in ngOnInit, it will give undefined 
+        but in ngAfterViewInit, it will give the value certainly.
+
+@ViewChildren()
+    - important variation of ViewChild(), incase need to select multiple ViewChild items.
+    - will give the array or QueryList
+    - if you work with decorator and want to console oninit and afterviewinit then in ngOnInit, it will give undefined 
+        but in ngAfterViewInit, it will give the value certainly.
+
+@ContentChild()
+    - same as ViewChild, difference is it's not looking for view, it will look for the projected component for ng-content
+        and have that value in the current component, but need to pass selector otherwise won't recognize it.
+    - for eg, new-ticket.html and control.ts
+    - if you work with decorator and want to console oninit and aftercontentinit then in ngOnInit, it will give undefined 
+        but in ngAfterContentInit, it will give the value certainly.
+
+@ContentChildren()
+    - same as ViewChildren, difference is it's not looking for view, it will look for the projected component for ng-content
+    - will give the array or QueryList
+    - if say new-ticket has 2 input element then the ContentChildren will give the array
+    - if you work with decorator and want to console oninit and aftercontentinit then in ngOnInit, it will give undefined 
+        but in ngAfterContentInit, it will give the value certainly.
+
+afterEveryRender(() => { ... })
+    - it calls when there is a change in anywhere in the website/application
+    - call inside the constructor
+    - for eg, control.ts
+
+afterNextRender(() => { ... })
+    - it calls when there is just next change in anywhere in the website/application
+    - call inside the constructor
+    - for eg, control.ts
+
+effect(() => { ... })
+    - calls whenever the signal value of that component changes.
+    - It's a subscription and it destroyed automatically whenever the component is destroyed.
+    - for eg, server-status.ts
+
+Signal effects with cleanup function    
+    - in effects, we might need to perform some cleanup work before the effect function runs again(eg, to clear some timer)
+    - it has onCleanup hook which be executed as part of effect function to define what should happen before the effect code runs the next time.
+    - for eg,
+        effect((onCleanup) => {
+            const task = getTask();
+            const timer = setTimeout(() => { console.log('No. of task', task) }, 1000);
+            onCleanup(() => {
+                clearTimeout(timer);
+            })
+        })
+
+in @for(..) {} 
+    - we have these helpers, {{ $first. $last, $odd, $even, $count }},  inside the for loop of new Angular
+
+Signal <parameter>.update(() => { ... })
+    - update is same as set method except it takes a function as an argument.
+
+Signal ticket = input<Ticket>({ alias: 'tktData', transform: (value) => { ... } })
+    - ticket is used in that component(html/ts) only but tktData is used outside of it, like in parent component but vice versa is not possible if alias is defined.
+    - transform func will take input value in value and then can returned as transformed value, for eg, to do some cleanup work or change the type of input value.
+    - only alias is there for Output() or signal output
+
+For custom 2-way binding, 
+    - input and output to work together we must specify a specific name 
+    - for eg, if Input is using size then Output must use sizeChange, means, <Input property name>Change, for Angular to understand that it work together
+        and emit, say sizeChange from function but no need to have that value in parent component call, instead use [(size)] in PC
+    - ALTERNATIVE approach to use signal model instead of both input and output as 
+        size = model.required<Ticket>()
+        and if need to change then change the same way as signal as this.size.set/update();
